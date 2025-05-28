@@ -1,0 +1,226 @@
+---
+---
+title: "Análisis del Dataset KDD Cup"
+author: "Carolina Maximo Arista"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: false
+    number_sections: false
+    fig_caption: true
+    theme: readable
+    highlight: tango
+---
+
+
+
+## Introducción
+
+El presente informe tiene como objetivo analizar un conjunto de datos correspondiente al famoso dataset **KDD Cup 1999**, ampliamente utilizado en el campo de la detección de intrusiones en redes informáticas. Este dataset contiene una gran cantidad de registros que representan conexiones de red, clasificadas como normales o como diferentes tipos de ataques.
+
+### Problema
+
+En entornos informáticos, la identificación automática de patrones anómalos en el tráfico de red es crucial para la seguridad. Los sistemas de detección de intrusos (IDS) buscan automatizar esta tarea, y para ello necesitan datos fiables y bien estructurados. Comprender cómo se distribuyen y relacionan las variables del dataset KDD Cup permite sentar las bases para construir modelos predictivos eficientes.
+
+### Objetivos del análisis
+
+- Explorar y limpiar los datos del archivo `kddcup_cleaned.csv`.
+- Visualizar y analizar la distribución de variables clave según la clase de conexión.
+- Identificar relaciones entre variables numéricas que puedan ser útiles en tareas de clasificación.
+- Documentar el proceso de análisis con código bien comentado para facilitar su comprensión y reproducibilidad.
+
+Este informe se generará en formato HTML utilizando RMarkdown.
+
+## Exploración y limpieza de datos
+
+Antes de realizar cualquier análisis o visualización, es fundamental asegurarse de que los datos estén limpios y correctamente estructurados. Para ello, se siguieron los siguientes pasos:
+
+1. **Carga del dataset**: Se importó el archivo `kddcup_cleaned.csv` desde su ubicación local utilizando `read.csv()`.
+
+2. **Exploración inicial**: Se utilizaron funciones como `summary()`, `str()` y `head()` para obtener una visión general de los tipos de datos, su estructura y valores extremos.
+
+3. **Manejo de valores faltantes**: Se identificaron y eliminaron las filas con valores perdidos (`NA`) utilizando la función `na.omit()`. Esto garantiza que el análisis posterior no se vea afectado por datos incompletos.
+
+4. **Conversión de tipos de variables**: Algunas columnas se convirtieron a factores (por ejemplo, `V2`, `V3`, `V4`, `V70`) y otras a numéricas (`V5`, `V6`, `V8`), para asegurar su tratamiento adecuado en los análisis estadísticos y gráficos.
+
+5. **Creación de nueva variable**: Se creó una nueva variable llamada `promedio_valores`, que representa el promedio de las columnas `V5`, `V6` y `V8`. Esta variable resume de forma sencilla una combinación de tres métricas numéricas.
+
+6. **Cálculo de estadísticas descriptivas agrupadas**: Se agruparon los datos por la clase (`V70`) y se calcularon promedios y medianas para las variables numéricas seleccionadas.
+
+Estas transformaciones prepararon los datos para su análisis y facilitaron la generación de gráficos representativos.
+
+## Visualización y análisis
+
+Una vez que los datos fueron limpiados y preparados, se procedió a generar diversas visualizaciones para explorar las distribuciones y relaciones entre variables. A continuación, se destacan algunas de las más relevantes:
+
+### Gráfico 1: Distribución de V5 según clase (`V70`)
+
+Se utilizó un diagrama de cajas (*boxplot*) para observar cómo varían los valores de la variable `V5` en función de la clase (`V70`).
+
+> **Interpretación**: Las cajas muestran diferencias importantes en la mediana y el rango intercuartílico entre clases. Esto indica que `V5` tiene poder discriminativo para diferenciar entre comportamientos normales y ataques.
+
+![Dispersión V5 vs V6 por clase](Boxplot.png)
+
+### Gráfico 2: Dispersión entre V5 y V6
+
+Se elaboró un gráfico de dispersión coloreado por clase para analizar la relación entre las variables `V5` y `V6`.
+
+> **Interpretación**: Se observan agrupaciones de puntos por clase, lo que sugiere que existe una relación significativa entre estas variables y la clase. Esto puede ser útil para futuros modelos de clasificación.
+
+![Dispersión V5 vs V6 por clase](histograma vs.png)
+
+### Gráfico 3: Histograma de V5
+
+Se visualizó la distribución de la variable `V5` mediante un histograma.
+
+> **Interpretación**: Se evidencia un sesgo hacia la derecha (asimetría positiva), con una alta concentración de valores en los primeros intervalos. Esto puede tener implicancias en el uso de esta variable en modelos estadísticos que asumen normalidad.
+
+### Gráfico 4: Dispersión faceteada por protocolo (`V2`)
+
+Finalmente, se realizó una visualización de dispersión entre `V5` y `V6`, segmentada por el protocolo de red (`V2`), utilizando `facet_wrap`.
+
+![Dispersión V5 vs V6 por clase](ultima grafica.png)
+
+> **Interpretación**: Se identifican concentraciones de puntos específicas según el protocolo (como `tcp`, `udp`, `icmp`), lo que refuerza la importancia del tipo de conexión en el análisis del comportamiento de red.
+## Conclusiones
+
+A partir del análisis exploratorio del dataset KDD Cup, se pueden destacar las siguientes conclusiones:
+
+- Variables como `V5` y `V6` presentan diferencias notables entre clases, lo cual es útil para tareas de clasificación.
+- La limpieza de datos (eliminación de valores faltantes y transformación de tipos) fue esencial para garantizar resultados consistentes.
+- Las visualizaciones generadas permitieron identificar patrones y relaciones entre variables que no eran evidentes en una simple tabla de datos.
+- La creación de la variable `promedio_valores` podría ser útil como característica combinada en modelos predictivos.
+
+### Líneas futuras de análisis:
+
+- Aplicar técnicas de reducción de dimensionalidad como PCA para explorar relaciones latentes.
+- Implementar modelos de clasificación supervisada (por ejemplo, árboles de decisión, random forest o redes neuronales).
+- Evaluar la importancia de cada variable mediante métricas de modelos como Gini o importancia en random forest.
+
+Este análisis sienta las bases para un estudio más profundo en el campo de la detección automática de intrusiones.
+
+## Código comentado
+
+Todo el código utilizado a lo largo del análisis ha sido documentado con comentarios explicativos. Se emplearon las siguientes buenas prácticas:
+
+- Uso de nombres descriptivos y claros para nuevas variables.
+- Agrupación del código por pasos secuenciales (carga, limpieza, visualización).
+- Inclusión de observaciones interpretativas junto a los gráficos.
+- Uso de `ggplot2` para visualizaciones de alta calidad y `data.table` para operaciones eficientes.
+
+Además, se empleó `knitr::kable()` para mostrar tablas de resumen en un formato limpio y legible dentro del documento HTML. Esto permite que el informe no solo sea funcional para los analistas, sino también comprensible para otros lectores interesados en replicar el proceso.
+
+A continuación se presenta todo el código utilizado en el análisis, explicado paso a paso para facilitar su comprensión y posible reutilización.
+
+
+# Paso 0: Instalar y cargar paquetes necesarios
+
+# Ejecuta esta línea una sola vez si no tienes los paquetes
+install.packages(c("dplyr", "ggplot2", "readr", "data.table"))
+
+# Cargar paquetes
+suppressMessages(library(dplyr))
+suppressMessages(library(ggplot2))
+suppressMessages(library(readr))
+suppressMessages(library(data.table))
+
+# Verificar que ggplot2 esté cargado
+print(packageVersion("ggplot2"))
+
+
+# Paso 1: Cargar el archivo CSV
+
+datos <- read.csv("C:/Users/wuep/Desktop/kddcup_cleaned.csv")
+
+# Paso 2: Exploración inicial
+
+print(summary(datos))     # Resumen estadístico
+print(str(datos))         # Estructura y tipos de datos
+print(head(datos))        # Primeras filas
+
+ggplot(datos, aes(x = V70, y = V5, fill = V70)) +
+  geom_boxplot() +
+  labs(title = "Distribución de V5 según clase", x = "Clase", y = "V5") +
+  theme_minimal()
+
+# Paso 3: Manejo de valores faltantes
+
+print(colSums(is.na(datos)))        # Conteo de NA por columna
+datos <- na.omit(datos)             # Eliminar filas con NA
+
+# Paso 4: Conversión de variables sin usar %>%
+
+datos$V2 <- as.factor(datos$V2)
+datos$V3 <- as.factor(datos$V3)
+datos$V4 <- as.factor(datos$V4)
+datos$V70 <- as.factor(datos$V70)
+
+datos$V5 <- as.numeric(as.character(datos$V5))
+datos$V6 <- as.numeric(as.character(datos$V6))
+datos$V8 <- as.numeric(as.character(datos$V8))
+
+# Validación: Verificar clases de columnas importantes
+print(sapply(datos[, c("V5", "V6", "V8", "V70")], class))
+
+# Paso 5: Crear nueva variable promedio_valores
+
+datos$promedio_valores <- rowMeans(datos[, c("V5", "V6", "V8")], na.rm = TRUE)
+
+# Paso 6: Estadísticas descriptivas agrupadas
+
+datos_dt <- data.table(datos)
+
+resumen <- datos_dt[, .(
+  media_V5 = mean(V5, na.rm = TRUE),
+  mediana_V5 = median(V5, na.rm = TRUE),
+  media_V6 = mean(V6, na.rm = TRUE),
+  mediana_V6 = median(V6, na.rm = TRUE),
+  n = .N
+), by = V70]
+
+print(resumen)
+
+
+# Paso 7: Visualización 1 - Boxplot de V5 por clase
+
+ggplot(datos, aes(x = V70, y = V5, fill = V70)) +
+  geom_boxplot() +
+  labs(title = "Distribución de V5 según clase", x = "Clase", y = "V5") +
+  theme_minimal()
+#Observaciones de la graficas que las cajas son muy diferentes entre clases, especialmente
+#en su mediana o rango, por lo que indica que V5 varía según la clase.
+
+# Paso 8: Visualización 2 - Dispersión V5 vs V6
+
+ggplot(datos, aes(x = V5, y = V6, color = V70)) +
+  geom_point(alpha = 0.5) +
+  labs(title = "Dispersión V5 vs V6 por clase", x = "V5", y = "V6") +
+  theme_minimal()
+#Observaciones de la garica Si grupos o nubes de puntos separados por color, por lo que 
+#significa que existe una relación útil entre V5, V6 y la clase.
+
+# Paso 9: Visualización 3 - Histograma de V5
+
+ggplot(datos, aes(x = V5)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "black") +
+  labs(title = "Histograma de V5", x = "V5", y = "Frecuencia") +
+  theme_minimal()
+#observaciones de la grafica La mayor parte de los valores de V5 se concentran en los primeros 
+#intervalos del eje X, lo que indica una fuerte asimetría positiva (sesgo a la derecha).
+
+# Paso 10: Visualización 4 - Facetado por V2
+ggplot(datos, aes(x = V5, y = V6)) +
+  geom_point(alpha = 0.5, color = "darkred") +
+  facet_wrap(~V2) +
+  labs(title = "V5 vs V6 faceteado por V2", x = "V5", y = "V6") +
+  theme_minimal()
+#se observa una fuerte concentración de puntos cerca del origen (valores bajos de V5 y V6),
+#especialmente para los protocolos tcp, udp y icmp.
+
+
+
+
+## Comentarios finales
+
+Este análisis exploratorio ha permitido comprender mejor las características del dataset KDD Cup, identificando variables relevantes, relaciones significativas y posibles implicaciones para modelos de aprendizaje automático. El siguiente paso será aplicar técnicas de clasificación para validar empíricamente estas observaciones.
+
